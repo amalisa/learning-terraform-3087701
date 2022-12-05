@@ -21,6 +21,7 @@ data "aws_vpc" "default" {
 resource "aws_instance" "blog" {
   ami                    = data.aws_ami.app_ami.id
   instance_type          = var.instance_type
+  vpc_security_group_ids = [data.aws_security_group.blog.id]
 
   tags = {
     Name = "Learning Terraform"
@@ -28,15 +29,13 @@ resource "aws_instance" "blog" {
 }
 
 resource "aws_security_group" "blog" {
-    name = "blog"
-    description = "Allow http and https in and allow all out"
+  name = "blog"
+  description = "Allow http and https in and allow all out"
 
-    tags = {
-        Terraform = "true"
-    }
-
-    vpc_id = data.aws_vpc.default.id
-
+  tags = {
+      Terraform = "true"
+  }
+  vpc_id = data.aws_vpc.default.id
 }
 
 resource "aws_security_group_rule "blog_http_in" {
